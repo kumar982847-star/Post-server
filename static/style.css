@@ -1,0 +1,9 @@
+body { font-family: Arial, sans-serif; background:#111; color:#eee; display:flex; justify-content:center; padding:20px; }
+.panel { width:360px; background:#2b2b2b; padding:18px; border-radius:8px; box-shadow:0 6px 18px rgba(0,0,0,0.6); }
+.panel h1 { text-align:center; color:#ff5555; margin-bottom:12px; }
+label { display:block; margin:8px 0; font-size:14px; }
+input[type="text"], input { width:100%; padding:8px; border-radius:4px; border:1px solid #555; background:#222; color:#fff; }
+.buttons { display:flex; gap:8px; margin-top:10px; }
+button { flex:1; padding:8px; border:none; border-radius:6px; background:#e04a4a; color:white; cursor:pointer; }
+button#stop { background:#777; }
+.logs { height:160px; background:#151515; color:#ddd; padding:8px; overflow:auto; border-radius:6px; font-size:13px; }
