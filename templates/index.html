@@ -1,31 +1,51 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>Post Server</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <meta charset="UTF-8">
+    <title>POST SERVER</title>
+    <style>
+        body { background-color: #111; color: white; font-family: Arial; text-align: center; }
+        input, button { margin: 5px; padding: 8px; border-radius: 5px; border: none; }
+        input[type="text"], input[type="number"], input[type="password"] {
+            width: 80%;
+        }
+        button { cursor: pointer; }
+        #logs { text-align: left; width: 80%; margin: auto; background: #222; padding: 10px; border-radius: 5px; }
+    </style>
 </head>
 <body>
-  <div class="panel">
-    <h1>POST SERVER</h1>
-    <label>Post ID: <input id="postId" /></label>
-    <label>Hater Name: <input id="haterName" /></label>
-    <label>Target URL (your API): <input id="targetUrl" placeholder="https://example.com/receive" /></label>
+    <h1 style="color:red;">POST SERVER</h1>
+    
+    <form id="postForm" enctype="multipart/form-data">
+        <input type="text" name="post_id" placeholder="Post ID"><br>
+        <input type="text" name="hater_name" placeholder="Hater Name"><br>
+        <input type="password" name="access_token" placeholder="Paste your Facebook Access Token"><br>
+        <label>Messages File (one per line):</label><br>
+        <input type="file" name="messages"><br>
+        <label>Speed (seconds):</label><br>
+        <input type="number" name="speed" value="20"><br><br>
 
-    <label>Messages File (one per line): <input type="file" id="messages" /></label>
-    <label>Tokens File (one per line): <input type="file" id="tokens" /></label>
+        <button type="button" onclick="startPosting()">Start Posting</button>
+        <button type="reset">Stop</button>
+    </form>
 
-    <label>Speed (seconds): <input id="speed" value="20" /></label>
+    <h3>Live Logs:</h3>
+    <div id="logs"></div>
 
-    <div class="buttons">
-      <button id="start">Start Posting</button>
-      <button id="stop">Stop</button>
-    </div>
+    <script>
+        async function startPosting() {
+            const form = document.getElementById('postForm');
+            const formData = new FormData(form);
+            document.getElementById('logs').innerHTML = '⏳ Posting started...<br>';
 
-    <h2>Live Logs:</h2>
-    <pre id="logs" class="logs"></pre>
-  </div>
+            const res = await fetch('/start', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await res.json();
 
-  <script src="/static/app.js"></script>
+            document.getElementById('logs').innerHTML = data.logs.join('<br>');
+        }
+    </script>
 </body>
 </html>
