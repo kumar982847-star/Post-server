@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Post Server</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="panel">
+    <h1>POST SERVER</h1>
+    <label>Post ID: <input id="postId" /></label>
+    <label>Hater Name: <input id="haterName" /></label>
+    <label>Target URL (your API): <input id="targetUrl" placeholder="https://example.com/receive" /></label>
+
+    <label>Messages File (one per line): <input type="file" id="messages" /></label>
+    <label>Tokens File (one per line): <input type="file" id="tokens" /></label>
+
+    <label>Speed (seconds): <input id="speed" value="20" /></label>
+
+    <div class="buttons">
+      <button id="start">Start Posting</button>
+      <button id="stop">Stop</button>
+    </div>
+
+    <h2>Live Logs:</h2>
+    <pre id="logs" class="logs"></pre>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
