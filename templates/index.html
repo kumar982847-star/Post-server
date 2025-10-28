@@ -1,109 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ mobile responsive -->
-    <title>POST SERVER</title>
-    <style>
-        body {
-            background-color: #111;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            width: 90%;
-            max-width: 450px;
-            margin: 20px auto;
-            background: #1b1b1b;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 0 10px #000;
-        }
-        input, button {
-            width: 100%;
-            margin: 8px 0;
-            padding: 10px;
-            border: none;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-        input[type="file"] {
-            background: #333;
-            color: #aaa;
-        }
-        input[type="text"], input[type="number"], input[type="password"] {
-            background: #222;
-            color: #fff;
-        }
-        button {
-            background: crimson;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
-        }
-        button:hover {
-            background: darkred;
-        }
-        h1 {
-            color: red;
-            margin-bottom: 10px;
-        }
-        #logs {
-            text-align: left;
-            width: 100%;
-            background: #222;
-            padding: 10px;
-            border-radius: 5px;
-            max-height: 300px;
-            overflow-y: auto;
-            margin-top: 10px;
-        }
-        label {
-            font-size: 14px;
-            color: #ccc;
-        }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>POST SERVER</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    input, textarea, button {
+      width: 90%;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+    input, textarea {
+      background: #222;
+      color: white;
+    }
+    button {
+      font-weight: bold;
+      color: white;
+      width: 45%;
+      margin: 5px;
+    }
+    #start { background-color: red; }
+    #stop { background-color: gray; }
+    #logs {
+      text-align: left;
+      background: #222;
+      padding: 10px;
+      border-radius: 5px;
+      max-height: 250px;
+      overflow-y: scroll;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>POST SERVER</h1>
+  <h1 style="color:red;">POST SERVER</h1>
 
-        <form id="postForm" enctype="multipart/form-data">
-            <input type="text" name="post_id" placeholder="Post ID"><br>
-            <input type="text" name="hater_name" placeholder="Hater Name"><br>
-            <input type="password" name="access_token" placeholder="Paste your Facebook Access Token"><br>
-            <label>Messages File (one per line):</label>
-            <input type="file" name="messages"><br>
-            <label>Speed (seconds):</label>
-            <input type="number" name="speed" value="20"><br>
+  <input type="text" id="post_id" placeholder="Post ID">
+  <input type="text" id="access_token" placeholder="Access Token (or Paste Here)">
+  <textarea id="messages" placeholder="Write messages (one per line)" rows="4"></textarea>
+  <input type="number" id="delay" value="10" placeholder="Delay (seconds)">
+  
+  <div>
+    <button id="start">Start Task</button>
+    <button id="stop">Stop Task</button>
+  </div>
 
-            <!-- ✅ Added Stop ID Field -->
-            <input type="text" name="stop_id" placeholder="Paste Stop ID (optional)"><br>
+  <h3>Live Logs:</h3>
+  <div id="logs">No logs yet...</div>
 
-            <!-- ✅ Changed button text -->
-            <button type="button" onclick="startPosting()">Start Task</button>
-        </form>
+  <script>
+    document.getElementById("start").onclick = async () => {
+      const post_id = document.getElementById("post_id").value;
+      const access_token = document.getElementById("access_token").value;
+      const messages = document.getElementById("messages").value;
+      const delay = document.getElementById("delay").value;
 
-        <h3>Live Logs:</h3>
-        <div id="logs">Waiting...</div>
-    </div>
+      if (!post_id || !access_token || !messages) {
+        alert("Please fill all fields!");
+        return;
+      }
 
-    <script>
-        async function startPosting() {
-            const form = document.getElementById('postForm');
-            const formData = new FormData(form);
-            document.getElementById('logs').innerHTML = '⏳ Task started...<br>';
+      await fetch("/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({ post_id, access_token, messages, delay })
+      });
+    };
 
-            const res = await fetch('/start', {
-                method: 'POST',
-                body: formData
-            });
-            const data = await res.json();
-            document.getElementById('logs').innerHTML = data.logs.join('<br>');
-        }
-    </script>
+    document.getElementById("stop").onclick = async () => {
+      await fetch("/stop");
+    };
+
+    // Auto-update logs every 3s
+    setInterval(async () => {
+      const res = await fetch("/logs");
+      const data = await res.json();
+      document.getElementById("logs").innerHTML = data.join("<br>");
+    }, 3000);
+  </script>
 </body>
 </html>
