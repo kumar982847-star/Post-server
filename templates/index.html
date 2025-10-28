@@ -2,48 +2,106 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- ✅ mobile responsive -->
     <title>POST SERVER</title>
     <style>
-        body { background-color: #111; color: white; font-family: Arial; text-align: center; }
-        input, button { margin: 5px; padding: 8px; border-radius: 5px; border: none; }
-        input[type="text"], input[type="number"], input[type="password"] {
-            width: 80%;
+        body {
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
-        button { cursor: pointer; }
-        #logs { text-align: left; width: 80%; margin: auto; background: #222; padding: 10px; border-radius: 5px; }
+        .container {
+            width: 90%;
+            max-width: 450px;
+            margin: 20px auto;
+            background: #1b1b1b;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: 0 0 10px #000;
+        }
+        input, button {
+            width: 100%;
+            margin: 8px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        input[type="file"] {
+            background: #333;
+            color: #aaa;
+        }
+        input[type="text"], input[type="number"], input[type="password"] {
+            background: #222;
+            color: #fff;
+        }
+        button {
+            background: crimson;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        button:hover {
+            background: darkred;
+        }
+        h1 {
+            color: red;
+            margin-bottom: 10px;
+        }
+        #logs {
+            text-align: left;
+            width: 100%;
+            background: #222;
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 10px;
+        }
+        label {
+            font-size: 14px;
+            color: #ccc;
+        }
     </style>
 </head>
 <body>
-    <h1 style="color:red;">POST SERVER</h1>
-    
-    <form id="postForm" enctype="multipart/form-data">
-        <input type="text" name="post_id" placeholder="Post ID"><br>
-        <input type="text" name="hater_name" placeholder="Hater Name"><br>
-        <input type="password" name="access_token" placeholder="Paste your Facebook Access Token"><br>
-        <label>Messages File (one per line):</label><br>
-        <input type="file" name="messages"><br>
-        <label>Speed (seconds):</label><br>
-        <input type="number" name="speed" value="20"><br><br>
+    <div class="container">
+        <h1>POST SERVER</h1>
 
-        <button type="button" onclick="startPosting()">Start Posting</button>
-        <button type="reset">Stop</button>
-    </form>
+        <form id="postForm" enctype="multipart/form-data">
+            <input type="text" name="post_id" placeholder="Post ID"><br>
+            <input type="text" name="hater_name" placeholder="Hater Name"><br>
+            <input type="password" name="access_token" placeholder="Paste your Facebook Access Token"><br>
+            <label>Messages File (one per line):</label>
+            <input type="file" name="messages"><br>
+            <label>Speed (seconds):</label>
+            <input type="number" name="speed" value="20"><br>
 
-    <h3>Live Logs:</h3>
-    <div id="logs"></div>
+            <!-- ✅ Added Stop ID Field -->
+            <input type="text" name="stop_id" placeholder="Paste Stop ID (optional)"><br>
+
+            <!-- ✅ Changed button text -->
+            <button type="button" onclick="startPosting()">Start Task</button>
+        </form>
+
+        <h3>Live Logs:</h3>
+        <div id="logs">Waiting...</div>
+    </div>
 
     <script>
         async function startPosting() {
             const form = document.getElementById('postForm');
             const formData = new FormData(form);
-            document.getElementById('logs').innerHTML = '⏳ Posting started...<br>';
+            document.getElementById('logs').innerHTML = '⏳ Task started...<br>';
 
             const res = await fetch('/start', {
                 method: 'POST',
                 body: formData
             });
             const data = await res.json();
-
             document.getElementById('logs').innerHTML = data.logs.join('<br>');
         }
     </script>
